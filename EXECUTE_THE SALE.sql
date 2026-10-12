@@ -1,0 +1,5 @@
+SET SERVEROUTPUT ON;
+BEGIN
+    process_sale(301, 101, 201, 401, 4150000);
+END;
+/
