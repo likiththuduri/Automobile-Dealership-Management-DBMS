@@ -1,0 +1,53 @@
+//File: 03.DML_QUERIES
+
+//1. Update vehicle price
+
+UPDATE Vehicle
+SET Price = 4250000
+WHERE Vehicle_ID = 101;
+
+//2. Delete a customer
+//Customer 202 has no associated sale in this sample.
+
+DELETE FROM Customer
+WHERE Customer_ID = 202;
+
+COMMIT;
+
+//3. Display available vehicles in ascending price order
+
+SELECT Vehicle_ID, Brand, Model, Price
+FROM Vehicle
+WHERE Status = 'AVAILABLE'
+ORDER BY Price;
+
+
+//4. Display all vehicle details
+
+SELECT *
+FROM Vehicle;
+
+//5. Display customer details
+
+SELECT *
+FROM Customer;
+
+//6. Display salesperson details
+
+SELECT *
+FROM Salesperson;
+
+//7. Display sold vehicles
+
+SELECT Vehicle_ID, Brand, Model, Price
+FROM Vehicle
+WHERE Status = 'SOLD';
+
+//8. Display vehicles costing more than the average price
+
+SELECT Brand, Model, Price
+FROM Vehicle
+WHERE Price > (
+    SELECT AVG(Price)
+    FROM Vehicle
+);

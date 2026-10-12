@@ -1,0 +1,55 @@
+//File: 04.JOINS_SUBQUERIES_VIEWS
+
+
+//1. JOIN: Display customer purchases
+
+SELECT c.Name AS Customer,
+       v.Brand,
+       v.Model,
+       s.Sale_Date,
+       s.Sale_Price
+FROM Sale s
+JOIN Customer c
+    ON s.Customer_ID = c.Customer_ID
+JOIN Vehicle v
+    ON s.Vehicle_ID = v.Vehicle_ID;
+
+//2. Salesperson performance report
+
+SELECT sp.Name,
+       COUNT(s.Sale_ID) AS Cars_Sold,
+       NVL(SUM(s.Sale_Price), 0) AS Total_Sales
+FROM Salesperson sp
+LEFT JOIN Sale s
+    ON sp.Salesperson_ID = s.Salesperson_ID
+GROUP BY sp.Salesperson_ID, sp.Name
+ORDER BY sp.Salesperson_ID;
+
+//3. HAVING: Salespersons with at least two sales
+
+SELECT Salesperson_ID,
+       COUNT(*) AS Total_Sales
+FROM Sale
+GROUP BY Salesperson_ID
+HAVING COUNT(*) >= 2;
+
+//4. Subquery: Vehicles above average price
+
+SELECT Brand, Model, Price
+FROM Vehicle
+WHERE Price > (
+    SELECT AVG(Price)
+    FROM Vehicle
+);
+
+//5. Create a view of available vehicles
+
+CREATE OR REPLACE VIEW Available_Vehicles AS
+SELECT Vehicle_ID, Brand, Model, Price, Fuel_Type
+FROM Vehicle
+WHERE Status = 'AVAILABLE';
+
+//6. Display available vehicles through the view
+
+SELECT *
+FROM Available_Vehicles;

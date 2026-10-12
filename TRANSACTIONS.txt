@@ -1,0 +1,48 @@
+//File: 05.TRANSACTIONS
+
+
+//1. COMMIT demonstration
+
+UPDATE Vehicle
+SET Color = 'Silver'
+WHERE Vehicle_ID = 102;
+
+COMMIT;
+
+SELECT Vehicle_ID, Color
+FROM Vehicle
+WHERE Vehicle_ID = 102;
+
+-- Expected: Vehicle 102, Silver
+
+
+//2. ROLLBACK demonstration
+
+UPDATE Vehicle
+SET Price = 5000000
+WHERE Vehicle_ID = 102;
+
+ROLLBACK;
+
+SELECT Vehicle_ID, Price
+FROM Vehicle
+WHERE Vehicle_ID = 102;
+
+-- Expected: Vehicle 102, 1850000
+
+
+//3. SAVEPOINT demonstration
+
+SAVEPOINT before_update;
+
+UPDATE Vehicle
+SET Color = 'Green'
+WHERE Vehicle_ID = 103;
+
+ROLLBACK TO before_update;
+
+SELECT Vehicle_ID, Color
+FROM Vehicle
+WHERE Vehicle_ID = 103;
+
+-- Expected: Vehicle 103, Blue

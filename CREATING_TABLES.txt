@@ -1,0 +1,87 @@
+//AUTOMOBILE DEALERSHIP MANAGEMENT DATABASE
+//File: 01. CREATING_TABLES 
+
+//1. Vehicle Table
+CREATE TABLE Vehicle (
+    Vehicle_ID       NUMBER PRIMARY KEY,
+    Brand            VARCHAR2(30) NOT NULL,
+    Model            VARCHAR2(30) NOT NULL,
+    Manufacture_Year NUMBER(4),
+    Price            NUMBER(12,2) CHECK (Price > 0),
+    Color            VARCHAR2(20),
+    Fuel_Type        VARCHAR2(15),
+    Status           VARCHAR2(15) DEFAULT 'AVAILABLE'
+                     CHECK (Status IN ('AVAILABLE', 'SOLD'))
+);
+
+//2. Customer Table
+CREATE TABLE Customer (
+    Customer_ID NUMBER PRIMARY KEY,
+    Name        VARCHAR2(50) NOT NULL,
+    Phone       VARCHAR2(15) UNIQUE NOT NULL,
+    Email       VARCHAR2(60) UNIQUE,
+    Address     VARCHAR2(100)
+);
+
+//3. Salesperson Table
+CREATE TABLE Salesperson (
+    Salesperson_ID NUMBER PRIMARY KEY,
+    Name           VARCHAR2(50) NOT NULL,
+    Phone          VARCHAR2(15) UNIQUE,
+    Email          VARCHAR2(60) UNIQUE,
+    Joining_Date   DATE
+);
+
+//4. Sale Table
+CREATE TABLE Sale (
+    Sale_ID        NUMBER PRIMARY KEY,
+    Vehicle_ID     NUMBER UNIQUE NOT NULL,
+    Customer_ID    NUMBER NOT NULL,
+    Salesperson_ID NUMBER NOT NULL,
+    Sale_Date      DATE DEFAULT SYSDATE,
+    Sale_Price     NUMBER(12,2) CHECK (Sale_Price > 0),
+
+    FOREIGN KEY (Vehicle_ID)
+        REFERENCES Vehicle(Vehicle_ID),
+
+    FOREIGN KEY (Customer_ID)
+        REFERENCES Customer(Customer_ID),
+
+    FOREIGN KEY (Salesperson_ID)
+        REFERENCES Salesperson(Salesperson_ID)
+);
+
+//5. Loan Table
+CREATE TABLE Loan (
+    Loan_ID       NUMBER PRIMARY KEY,
+    Sale_ID       NUMBER UNIQUE NOT NULL,
+    Loan_Amount   NUMBER(12,2) CHECK (Loan_Amount > 0),
+    Interest_Rate NUMBER(5,2) CHECK (Interest_Rate >= 0),
+    Tenure        NUMBER CHECK (Tenure > 0),
+    EMI           NUMBER(12,2),
+    Loan_Status   VARCHAR2(20)
+                  CHECK (
+                      Loan_Status IN
+                      ('ACTIVE', 'CLOSED', 'DEFAULTED')
+                  ),
+
+    FOREIGN KEY (Sale_ID)
+        REFERENCES Sale(Sale_ID)
+);
+
+//6. Payment Table
+CREATE TABLE Payment (
+    Payment_ID   NUMBER PRIMARY KEY,
+    Loan_ID      NUMBER NOT NULL,
+    Payment_Date DATE DEFAULT SYSDATE,
+    Amount       NUMBER(12,2) CHECK (Amount > 0),
+    Payment_Mode VARCHAR2(20)
+                 CHECK (
+                     Payment_Mode IN
+                     ('CASH', 'CARD', 'UPI', 'BANK')
+                 ),
+
+    FOREIGN KEY (Loan_ID)
+        REFERENCES Loan(Loan_ID)
+);
+
